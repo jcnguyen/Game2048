@@ -38,7 +38,6 @@ public class Game2048 extends WindowController implements KeyListener {
 	private ScoreBoard scoreBoard;
 	private Text gameOverText;
 	private Text gameWinText;
-	private Text gameWinText2;
 
 	// remembers if the game over screen is currently shown
 	private boolean activatedGameOver = false; 
@@ -65,11 +64,6 @@ public class Game2048 extends WindowController implements KeyListener {
 		gameWinText.setFontSize(GAMEOVER_FONT_SIZE);
 		centerText(gameWinText, BOARD_LOC, BOARD_SIZE, BOARD_SIZE);
 		gameWinText.hide();
-		gameWinText2 = new Text("(click to continue)", BOARD_SIZE/2, BOARD_SIZE/2, canvas);
-		gameWinText2.setFontSize(GAMEOVER_FONT_SIZE/2);
-		centerText(gameWinText2, BOARD_LOC, BOARD_SIZE, BOARD_SIZE);
-		gameWinText2.move(0, gameWinText.getHeight());
-		gameWinText2.hide();
 
 		// create the score board and reset button
 		scoreBoard = new ScoreBoard(SCORE_LOC, BOX_WIDTH, BOX_HEIGHT, canvas);
@@ -121,6 +115,7 @@ public class Game2048 extends WindowController implements KeyListener {
 		scoreBoard.restart();
 		gameOverText.hide();
 		gameOverBG.hide();
+		gameWinText.hide();
 		board.addTile();
 	}
 	
@@ -151,8 +146,6 @@ public class Game2048 extends WindowController implements KeyListener {
 		gameOverBG.sendToFront();
 		gameWinText.show();
 		gameWinText.sendToFront();
-		gameWinText2.show();
-		gameWinText2.sendToFront();
 	}
 
 	/**

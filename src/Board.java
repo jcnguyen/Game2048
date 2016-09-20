@@ -3,7 +3,7 @@ import java.awt.Color;
 
 public class Board {
 	
-	private static final int TILE_VALUE = 2;
+	private static final int TILE_VALUE = 2048;
 	private static final int WIN_TILE = 2048;
 
 	private boolean tileMoved; // remembers if a tile has been moved
