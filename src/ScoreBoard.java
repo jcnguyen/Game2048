@@ -8,30 +8,52 @@ public class ScoreBoard {
 	private static final int FONT_SIZE = 30;
 	private static final String TITLE = "SCORE";
 	
-	private int score = 0;
+	private DrawingCanvas canvas;
 	private Location boardLocation;
 	private Text scoreDisplay;
-	private DrawingCanvas canvas;
 	
+	private Score score;
 	
 	/**
 	 * Constructs the score board.
 	 * 
 	 * @param loc  Coordinates where the score board is drawn.
-	 * @param canvas  Canvas where the score board is drawn
+	 * @param canvas  Canvas where the score board is drawn.
 	 */
 	public ScoreBoard(Location loc, DrawingCanvas canvas) {
 		boardLocation = loc;
 		this.canvas = canvas;
 		
-		drawScoreBox();
-		drawTitle();
-		drawScoreDisplay(loc, canvas);	
+		drawScoreBoard();
+		initializeScore();
 	}
-
-	private void drawScoreBox() {
-		FilledRect board = new FilledRect(boardLocation, BOX_WIDTH, BOX_HEIGHT, canvas);
-		board.setColor(Color2048.CELL_BG);
+	
+	/**
+	 * Updates the score.
+	 * 
+	 * @param numPoints  The number of points to add to the current score.
+	 */
+	public void addToScore(int numPoints) {
+		score.add(numPoints);
+		redrawScore();
+	}
+	
+	/**
+	 * Resets the score board.
+	 */
+	public void reset() {
+		score.reset();
+		redrawScore();
+	}
+	
+	private void drawScoreBoard() {
+		drawBox();
+		drawTitle();
+		drawScore();	
+	}
+	
+	private void drawBox() {
+		new FilledRect(boardLocation, BOX_WIDTH, BOX_HEIGHT, canvas).setColor(Color2048.CELL_BG);
 	}
 	
 	private void drawTitle() {
@@ -41,33 +63,20 @@ public class ScoreBoard {
 		centerText(title);
 	}
 	
-	private void drawScoreDisplay(Location loc, DrawingCanvas canvas) {
-		scoreDisplay = new Text(score, loc.getX(), loc.getY() + BOX_HEIGHT/2, canvas);
+	private void drawScore() {
+		scoreDisplay = new Text("", boardLocation.getX(), boardLocation.getY() + BOX_HEIGHT/2, canvas);
 		scoreDisplay.setColor(Color.WHITE);
 		scoreDisplay.setFontSize(FONT_SIZE);
+	}
+	
+	private void initializeScore() {
+		score = new Score();
+		redrawScore();
 		centerText(scoreDisplay);
-	}
-	
-	/**
-	 * Updates the score.
-	 * 
-	 * @param numPoints  the number of points to add to the current score.
-	 */
-	public void addToScore(int numPoints) {
-		score += numPoints;
-		redrawScore();
-	}
-	
-	/**
-	 * Resets the scoreboard.
-	 */
-	public void reset() {
-		score = 0;
-		redrawScore();
 	}
 
 	private void redrawScore() {
-		scoreDisplay.setText(score);
+		scoreDisplay.setText(score.getScore());
 		centerText(scoreDisplay);
 	}
 	
