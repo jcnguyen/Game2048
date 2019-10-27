@@ -57,6 +57,66 @@ public class Game2048 extends WindowController implements KeyListener {
 		setupArrowKeyListener();
 	}
 	
+	/**
+	 * Event handler, called when mouse is clicked.
+	 * 
+	 * Handles the reset button.
+	 * 
+	 * @param point    mouse coordinates
+	 */
+	public void onMouseClick(Location point) {
+		if(resetButton.contains(point)) {
+			restart();
+		}
+	}
+
+	/**
+	 * (required) KeyListener event handler for a key having been pressed and
+	 * released.
+	 * 
+	 * @param e    event (key that was typed)
+	 */
+	public void keyTyped(KeyEvent e) {}
+
+	/**
+	 * (required) KeyListener event handler for a key having been released.
+	 * 
+	 * @param e    event (key that was released)
+	 */
+	public void keyReleased(KeyEvent e) {
+		keyDown = false; // remember that the key is no longer down
+	}
+
+	/**
+	 * (required) KeyListener event handler for a key having been pressed.
+	 * 
+	 * Handles the game state (playing or game over) and 
+	 * handles arrow keys by moving the tiles in the indicated direction.
+	 * 
+	 * @param e    event (key that was pressed)
+	 */
+	public void keyPressed(KeyEvent e) {
+		if(!isGameOver()) {
+			if(!keyDown) {
+				if (e.getKeyCode() == KeyEvent.VK_UP) {
+					board.moveUp();
+				} else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+					board.moveDown();
+				} else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+					board.moveLeft();
+				} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+					board.moveRight();
+				}
+				keyDown = true;
+				if (board.istile2048()) {
+					gameWin();
+				}
+			}
+		} else if(!activatedGameOver) {
+			gameOver();
+		}
+	}
+	
 	private void drawTitle() {
 		Text title = new Text("2048", TITLE_LOC, canvas);
 		title.setFontSize(TITLE_FONT_SIZE);
@@ -169,66 +229,5 @@ public class Game2048 extends WindowController implements KeyListener {
 		gameOverBG.sendToFront();
 		gameWinText.show();
 		gameWinText.sendToFront();
-	}
-
-	/**
-	 * Event handler, called when mouse is clicked.
-	 * 
-	 * Handles the reset button.
-	 * 
-	 * @param point    mouse coordinates
-	 */
-	public void onMouseClick(Location point) {
-		if(resetButton.contains(point)) {
-			restart();
-		}
-	}
-
-	/**
-	 * (required) KeyListener event handler for a key having been pressed and
-	 * released.
-	 * 
-	 * @param e    event (key that was typed)
-	 */
-	public void keyTyped(KeyEvent e) {}
-
-	/**
-	 * (required) KeyListener event handler for a key having been released.
-	 * 
-	 * @param e    event (key that was released)
-	 */
-	public void keyReleased(KeyEvent e) {
-		keyDown = false; // remember that the key is no longer down
-	}
-
-	/**
-	 * (required) KeyListener event handler for a key having been pressed.
-	 * 
-	 * Handles the game state (playing or game over) and 
-	 * handles arrow keys by moving the tiles in the indicated direction.
-	 * 
-	 * @param e    event (key that was pressed)
-	 */
-	public void keyPressed(KeyEvent e) {
-		if(!isGameOver()) {
-			if(!keyDown) {
-				if (e.getKeyCode() == KeyEvent.VK_UP) {
-					board.moveUp();
-				} else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-					board.moveDown();
-				} else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-					board.moveLeft();
-				} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-					board.moveRight();
-				}
-				keyDown = true;
-				if (board.istile2048()) {
-					gameWin();
-				}
-			}
-		} else if(!activatedGameOver) {
-			gameOver();
-		}
-	}
-	
+	}	
 }
