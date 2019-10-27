@@ -1,6 +1,5 @@
 import objectdraw.*;
 import java.awt.event.*;
-import java.awt.Color;
 
 /**
  * Game2048.java
@@ -19,10 +18,7 @@ public class Game2048 extends WindowController implements KeyListener {
 	// object sizes
 	private static final int TITLE_FONT_SIZE = 100;
 	private static final int TILE_SIZE = 100;
-	private static final int RESET_FONT_SIZE = 30;
 	private static final int GAMEOVER_FONT_SIZE = 50;
-	private static final int BOX_WIDTH = 135;
-	private static final int BOX_HEIGHT = 80;
 	private static final int BOARD_SIZE = (NUM_CELLS+1)*TILE_OFFSET + NUM_CELLS*TILE_SIZE;
 	
 	// object locations
@@ -33,7 +29,7 @@ public class Game2048 extends WindowController implements KeyListener {
 	
 	// objects
 	private Board board;
-	private FilledRect resetButton;
+	private ResetButton resetButton;
 	private FilledRect gameOverBG;
 	private ScoreBoard scoreBoard;
 	private Text gameOverText;
@@ -52,7 +48,7 @@ public class Game2048 extends WindowController implements KeyListener {
 		drawTitle();
 		drawGameOverObjects();
 		drawScoreBoard();
-		drawResetObjects();
+		drawResetButton();
 		initializeGameBoard();
 		setupArrowKeyListener();
 	}
@@ -65,7 +61,7 @@ public class Game2048 extends WindowController implements KeyListener {
 	 * @param point    mouse coordinates
 	 */
 	public void onMouseClick(Location point) {
-		if(resetButton.contains(point)) {
+		if (resetButton.isClicked(point)) {
 			restart();
 		}
 	}
@@ -141,14 +137,8 @@ public class Game2048 extends WindowController implements KeyListener {
 		scoreBoard = new ScoreBoard(SCORE_LOC, canvas);
 	}
 	
-	private void drawResetObjects() {
-		resetButton = new FilledRect(RESET_LOC, BOX_WIDTH, BOX_HEIGHT/2, canvas);
-		resetButton.setColor(Color2048.CELL_BG);
-		
-		Text restartText = new Text("RESET", RESET_LOC, canvas);
-		restartText.setColor(Color.WHITE);
-		restartText.setFontSize(RESET_FONT_SIZE);
-		centerText(restartText, RESET_LOC, BOX_WIDTH, BOX_HEIGHT/2);
+	private void drawResetButton() {
+		resetButton = new ResetButton(RESET_LOC, canvas);
 	}
 	
 	private Board drawGameBoard() {
