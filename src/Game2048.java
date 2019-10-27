@@ -139,11 +139,12 @@ public class Game2048 extends WindowController implements KeyListener {
 	
 	private void drawScoreBoard() {
 		scoreBoard = new ScoreBoard(SCORE_LOC, canvas);
-		resetButton = new FilledRect(RESET_LOC, BOX_WIDTH, BOX_HEIGHT/2, canvas);
-		resetButton.setColor(Color2048.CELL_BG);
 	}
 	
 	private void drawResetObjects() {
+		resetButton = new FilledRect(RESET_LOC, BOX_WIDTH, BOX_HEIGHT/2, canvas);
+		resetButton.setColor(Color2048.CELL_BG);
+		
 		Text restartText = new Text("RESET", RESET_LOC, canvas);
 		restartText.setColor(Color.WHITE);
 		restartText.setFontSize(RESET_FONT_SIZE);
