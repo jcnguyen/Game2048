@@ -49,10 +49,21 @@ public class Game2048 extends WindowController implements KeyListener {
 	 * Set-up and start the game.
 	 */
 	public void begin() {
-		// create the title and game over objects
+		drawTitle();
+		drawGameOverObjects();
+		drawScoreBoard();
+		drawResetObjects();
+		initializeGameBoard();
+		setupArrowKeyListener();
+	}
+	
+	private void drawTitle() {
 		Text title = new Text("2048", TITLE_LOC, canvas);
 		title.setFontSize(TITLE_FONT_SIZE);
 		title.setColor(Color2048.DARK_FONT);
+	}
+	
+	private void drawGameOverObjects() {
 		gameOverBG = new FilledRect(BOARD_LOC, BOARD_SIZE, BOARD_SIZE, canvas);
 		gameOverBG.setColor(Color2048.GAMEOVER_BG);
 		gameOverBG.hide();
@@ -64,28 +75,40 @@ public class Game2048 extends WindowController implements KeyListener {
 		gameWinText.setFontSize(GAMEOVER_FONT_SIZE);
 		centerText(gameWinText, BOARD_LOC, BOARD_SIZE, BOARD_SIZE);
 		gameWinText.hide();
-
-		// create the score board and reset button
+	}
+	
+	private void drawScoreBoard() {
 		scoreBoard = new ScoreBoard(SCORE_LOC, BOX_WIDTH, BOX_HEIGHT, canvas);
 		resetButton = new FilledRect(RESET_LOC, BOX_WIDTH, BOX_HEIGHT/2, canvas);
 		resetButton.setColor(Color2048.CELL_BG);
+	}
+	
+	private void drawResetObjects() {
 		Text restartText = new Text("RESET", RESET_LOC, canvas);
 		restartText.setColor(Color.WHITE);
 		restartText.setFontSize(RESET_FONT_SIZE);
 		centerText(restartText, RESET_LOC, BOX_WIDTH, BOX_HEIGHT/2);
-		
-		// create the game board and the first tile
+	}
+	
+	private Board drawGameBoard() {
 		board = new Board(BOARD_LOC, NUM_CELLS, TILE_SIZE, TILE_OFFSET, scoreBoard, canvas);
 		new FilledRect(BOARD_LOC, BOARD_SIZE, BOARD_SIZE, canvas).setColor(Color2048.BOARD_BG);
+		
 		for(int row = 0; row < NUM_CELLS; row++) {
 			for(int col = 0; col < NUM_CELLS; col++) {
 				Location cellLoc = board.posToCoord(row, col);
 				new FilledRect(cellLoc.getX(), cellLoc.getY(), TILE_SIZE, TILE_SIZE, canvas).setColor(Color2048.CELL_BG);
 			}
 		}
+		return board;
+	}
+
+	private void initializeGameBoard() {
+		board = drawGameBoard();
 		board.addTile();
-		
-		// get ready to handle the arrow keys
+	}
+	
+	private void setupArrowKeyListener() {
 		requestFocus();
 		addKeyListener(this);
 		setFocusable(true);
