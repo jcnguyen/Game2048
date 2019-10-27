@@ -138,7 +138,7 @@ public class Game2048 extends WindowController implements KeyListener {
 	}
 	
 	private void drawScoreBoard() {
-		scoreBoard = new ScoreBoard(SCORE_LOC, BOX_WIDTH, BOX_HEIGHT, canvas);
+		scoreBoard = new ScoreBoard(SCORE_LOC, canvas);
 		resetButton = new FilledRect(RESET_LOC, BOX_WIDTH, BOX_HEIGHT/2, canvas);
 		resetButton.setColor(Color2048.CELL_BG);
 	}
@@ -195,7 +195,7 @@ public class Game2048 extends WindowController implements KeyListener {
 	private void restart() {
 		activatedGameOver = false;
 		board.restart();
-		scoreBoard.restart();
+		scoreBoard.reset();
 		gameOverText.hide();
 		gameOverBG.hide();
 		gameWinText.hide();

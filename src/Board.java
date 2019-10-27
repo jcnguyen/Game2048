@@ -154,7 +154,7 @@ public class Board {
 		// construct the new tile and update
 		board[row1][col1] = new Tile(newVal, cellLoc.getX(), cellLoc.getY(), tileSize, canvas);
 		board[row1][col1].setColor(colors[0], colors[1]);
-		scoreBoard.updateScore(newVal);
+		scoreBoard.addToScore(newVal);
 		tileMoved = true;
 	}
 
