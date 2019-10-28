@@ -115,7 +115,7 @@ public class Board {
 
 		// add a tile to that cell
 		Location cellLoc = posToCoord(row, col);
-		board[row][col] = new Tile(TILE_VALUE, cellLoc.getX(), cellLoc.getY(), tileSize, canvas);
+		board[row][col] = new Tile(TILE_VALUE, cellLoc, tileSize, canvas);
 	}
 
 	/**
@@ -152,7 +152,7 @@ public class Board {
 		Color[] colors = chooseTileColors(newVal);
 		
 		// construct the new tile and update
-		board[row1][col1] = new Tile(newVal, cellLoc.getX(), cellLoc.getY(), tileSize, canvas);
+		board[row1][col1] = new Tile(newVal, cellLoc, tileSize, canvas);
 		board[row1][col1].setColor(colors[0], colors[1]);
 		scoreBoard.addToScore(newVal);
 		tileMoved = true;

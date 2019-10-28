@@ -1,41 +1,48 @@
 import objectdraw.*;
 import java.awt.Color;
 
-/**
- * Tile.java
- *
- * Describes a tile of the game 2048.
- */
 public class Tile {
 	
 	private static final int FONT_SIZE = 40;
 	
+	private DrawingCanvas canvas;
 	private double size;
 	private int value;
 	private FilledRect tile;
 	private Text valueDisplay;
+	private Location location;
 	
 	/**
 	 * Constructs a tile.
 	 * 
-	 * @param value         the value of the tile
-	 * @param x             the x location of the tile
-	 * @param y             the y location of the tile
-	 * @param size          the width and height of the tile
-	 * @param canvas        where the tile is drawn
-	 */
-	public Tile(int value, double x, double y, double size, DrawingCanvas canvas) {
+	 * @param value  The value of the tile.
+	 * @param loction  The location of the tile.
+	 * @param size  The size of the tile.
+	 * @param canvas  The canvas where the tile is drawn.
+	 */	
+	public Tile(int value, Location location, double size, DrawingCanvas canvas) {
 		this.value = value;
 		this.size = size;
+		this.location = location;
+		this.canvas = canvas;
 
-		// construct the tile
-		tile = new FilledRect(x, y, size, size, canvas);
+		drawTile();
+	}
+
+	private void drawTile() {
+		drawBox();
+		drawValue();
+	}
+
+	private void drawBox() {
+		tile = new FilledRect(location, size, size, canvas);
 		tile.setColor(Color2048.TILE2);
-		
-		// construct the text representing the tile value
-		valueDisplay = new Text(value, x, y, canvas);
+	}
+	
+	private void drawValue() {
+		valueDisplay = new Text(value, location, canvas);
 		valueDisplay.setColor(Color2048.DARK_FONT);
-		valueDisplay.setBold(true);;
+		valueDisplay.setBold(true);
 		valueDisplay.setFontSize(FONT_SIZE);
 		centerText(valueDisplay);
 	}
@@ -43,7 +50,7 @@ public class Tile {
 	/**
 	 * Gets the tile value.
 	 * 
-	 * @return the value of the tile
+	 * @return The value of the tile.
 	 */
 	public int getValue() {
 		return value;
@@ -52,8 +59,8 @@ public class Tile {
 	/**
 	 * Sets the color of the tile.
 	 * 
-	 * @param colTile    the color to set the tile
-	 * @param colText    the color to set the value
+	 * @param colTile  The color to set the tile.
+	 * @param colText  The color to set the value.
 	 */
 	public void setColor(Color colTile, Color colText) {
 		tile.setColor(colTile);
@@ -61,22 +68,16 @@ public class Tile {
 	}
 	
 	/**
-	 * Permanently removes the tile from the canvas it is currently on.
+	 * Permanently removes the tile from the canvas.
 	 */
 	public void removeFromCanvas() {
 		tile.removeFromCanvas();
 		valueDisplay.removeFromCanvas();
 	}
 	
-	/**
-	 * Centers the tile value.
-	 *
-	 * @param text    the text to center
-	 */
 	private void centerText(Text text) {
-		double x = tile.getX() + (size-text.getWidth())/2;
-		double y = tile.getY() + (size-text.getHeight())/2;
+		double x = tile.getX() + (size - text.getWidth())/2;
+		double y = tile.getY() + (size - text.getHeight())/2;
 		text.moveTo(x, y);
 	}
-
 }
