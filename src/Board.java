@@ -12,6 +12,7 @@ public class Board {
 	private int tileOffset;
 	private DrawingCanvas canvas;
 	private Location boardLoc;
+	private int boardSize;
 	private ScoreBoard scoreBoard;
 	private RandomIntGenerator randGen; // generates random board position
 	private Tile[][] board;
@@ -20,25 +21,47 @@ public class Board {
 	 * Constructs the board.
 	 * 
 	 * @param boardLoc      the coordinates of the board
+	 * @param size  The size of the board.
 	 * @param numCells      the number of rows and columns in the board
 	 * @param tileSize      the width and height of each tile
 	 * @param tileOffset    the space between each tile
 	 * @param scoreBoard    the current score
 	 * @param canvas        where the board is drawn
 	 */
-	public Board(Location boardLoc, int numCells, int tileSize, int tileOffset, ScoreBoard scoreBoard, DrawingCanvas canvas) {
+	public Board(Location boardLoc, int size, int numCells, int tileSize, int tileOffset, ScoreBoard scoreBoard, DrawingCanvas canvas) {
 		this.numCells = numCells;
 		this.boardLoc = boardLoc;
+		this.boardSize = size;
 		this.tileSize = tileSize;
 		this.tileOffset = tileOffset;
 		this.scoreBoard = scoreBoard;
 		this.canvas = canvas;
-
+		
+		drawEmptyBoard();
+		
 		board = new Tile[numCells][numCells];
 		randGen = new RandomIntGenerator(0, numCells-1);
 		tileMoved = false;
 	}
+
+	private void drawEmptyBoard() {
+		drawBoardOutline();
+		drawCells();
+	}
+
+	private void drawBoardOutline() {
+		new FilledRect(boardLoc, boardSize, boardSize, canvas).setColor(Color2048.BOARD_BG);
+	}
 	
+	private void drawCells() {
+		for(int row = 0; row < numCells; row++) {
+			for(int col = 0; col < numCells; col++) {
+				Location cellLoc = posToCoord(row, col);
+				new FilledRect(cellLoc.getX(), cellLoc.getY(), tileSize, tileSize, canvas).setColor(Color2048.CELL_BG);
+			}
+		}
+	}
+
 	/**
 	 * Determines if the board is full.
 	 * 

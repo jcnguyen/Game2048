@@ -44,12 +44,8 @@ public class Game2048 extends WindowController implements KeyListener {
 	 * Set-up and start the game.
 	 */
 	public void begin() {
-		drawTitle();
-		drawAndHideGameOverBoard();
-		drawScoreBoard();
-		drawResetButton();
-		initializeGameBoard();
-		setupArrowKeyListener();
+		drawGame();
+		setupGame();
 	}
 	
 	/**
@@ -112,13 +108,20 @@ public class Game2048 extends WindowController implements KeyListener {
 		}
 	}
 	
+	private void drawGame() {
+		drawTitle();
+		drawScoreBoard();
+		drawResetButton();
+		drawGameOverBoard();
+		drawBoard();
+	}
+	
 	private void drawTitle() {
 		new Title(GAME_TITLE, TITLE_LOC, TITLE_FONT_SIZE, Color2048.DARK_FONT, canvas);
 	}
 	
-	private void drawAndHideGameOverBoard() {
+	private void drawGameOverBoard() {
 		gameOverBoard = new GameOverBoard(BOARD_LOC, BOARD_SIZE, canvas);
-		gameOverBoard.hide();
 	}
 	
 	private void drawScoreBoard() {
@@ -129,21 +132,13 @@ public class Game2048 extends WindowController implements KeyListener {
 		resetButton = new ResetButton(RESET_LOC, canvas);
 	}
 	
-	private Board drawGameBoard() {
-		board = new Board(BOARD_LOC, NUM_CELLS, TILE_SIZE, TILE_OFFSET, scoreBoard, canvas);
-		new FilledRect(BOARD_LOC, BOARD_SIZE, BOARD_SIZE, canvas).setColor(Color2048.BOARD_BG);
-		
-		for(int row = 0; row < NUM_CELLS; row++) {
-			for(int col = 0; col < NUM_CELLS; col++) {
-				Location cellLoc = board.posToCoord(row, col);
-				new FilledRect(cellLoc.getX(), cellLoc.getY(), TILE_SIZE, TILE_SIZE, canvas).setColor(Color2048.CELL_BG);
-			}
-		}
-		return board;
+	private void drawBoard() {		
+		board = new Board(BOARD_LOC, BOARD_SIZE, NUM_CELLS, TILE_SIZE, TILE_OFFSET, scoreBoard, canvas);
 	}
 
-	private void initializeGameBoard() {
-		board = drawGameBoard();
+	private void setupGame() {
+		gameOverBoard.hide();
+		setupArrowKeyListener();
 		board.addTile();
 	}
 	
@@ -155,7 +150,7 @@ public class Game2048 extends WindowController implements KeyListener {
 	}
 	
 	/**
-	 * Resets the game.
+	 * Restarts the game.
 	 */
 	private void restart() {
 		activatedGameOver = false;
