@@ -30,18 +30,19 @@ public class Tile {
 	}
 
 	private void drawTile() {
-		drawBox();
-		drawValue();
+		Color[] colorScheme = selectColorScheme(value);
+		drawBox(colorScheme[0]);
+		drawValue(colorScheme[1]);
 	}
 
-	private void drawBox() {
+	private void drawBox(Color color) {
 		tile = new FilledRect(location, size, size, canvas);
-		tile.setColor(Color2048.TILE2);
+		tile.setColor(color);
 	}
 	
-	private void drawValue() {
+	private void drawValue(Color color) {
 		valueDisplay = new Text(value, location, canvas);
-		valueDisplay.setColor(Color2048.DARK_FONT);
+		valueDisplay.setColor(color);
 		valueDisplay.setBold(true);
 		valueDisplay.setFontSize(FONT_SIZE);
 		centerText(valueDisplay);
@@ -57,17 +58,6 @@ public class Tile {
 	}
 	
 	/**
-	 * Sets the color of the tile.
-	 * 
-	 * @param colTile  The color to set the tile.
-	 * @param colText  The color to set the value.
-	 */
-	public void setColor(Color colTile, Color colText) {
-		tile.setColor(colTile);
-		valueDisplay.setColor(colText);
-	}
-	
-	/**
 	 * Permanently removes the tile from the canvas.
 	 */
 	public void removeFromCanvas() {
@@ -79,5 +69,60 @@ public class Tile {
 		double x = tile.getX() + (size - text.getWidth())/2;
 		double y = tile.getY() + (size - text.getHeight())/2;
 		text.moveTo(x, y);
+	}
+	
+	private Color[] selectColorScheme(int val) {
+		Color[] colors = new Color[2];		
+		switch(val) {
+			case 2:
+				colors[0] = Color2048.TILE2;
+				colors[1] = Color2048.DARK_FONT;
+				break;
+			case 4:
+				colors[0] = Color2048.TILE4;
+				colors[1] = Color2048.DARK_FONT;
+				break;
+			case 8:
+				colors[0] = Color2048.TILE8;
+				colors[1] = Color2048.LIGHT_FONT;
+				break;
+			case 16:
+				colors[0] = Color2048.TILE16;
+				colors[1] = Color2048.LIGHT_FONT;
+				break;
+			case 32:
+				colors[0] = Color2048.TILE32;
+				colors[1] = Color2048.LIGHT_FONT;
+				break;
+			case 64:
+				colors[0] = Color2048.TILE64;
+				colors[1] = Color2048.LIGHT_FONT;
+				break;
+			case 128:
+				colors[0] = Color2048.TILE128;
+				colors[1] = Color2048.LIGHT_FONT;
+				break;
+			case 256:
+				colors[0] = Color2048.TILE256;
+				colors[1] = Color2048.LIGHT_FONT;
+				break;
+			case 512:
+				colors[0] = Color2048.TILE512;
+				colors[1] = Color2048.LIGHT_FONT;
+				break;
+			case 1024:
+				colors[0] = Color2048.TILE1024;
+				colors[1] = Color2048.LIGHT_FONT;
+				break;
+			case 2048:
+				colors[0] = Color2048.TILE2048;
+				colors[1] = Color2048.LIGHT_FONT;
+				break;
+			default:
+				colors[0] = Color2048.TILELARGE;
+				colors[1] = Color2048.LIGHT_FONT;
+				break;			
+		}
+		return colors;
 	}
 }

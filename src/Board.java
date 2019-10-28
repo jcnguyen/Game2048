@@ -149,11 +149,9 @@ public class Board {
 		// calculate information used to construct the new tile
 		int newVal = val1 + val2;
 		Location cellLoc = posToCoord(row1, col1);
-		Color[] colors = chooseTileColors(newVal);
 		
 		// construct the new tile and update
 		board[row1][col1] = new Tile(newVal, cellLoc, tileSize, canvas);
-		board[row1][col1].setColor(colors[0], colors[1]);
 		scoreBoard.addToScore(newVal);
 		tileMoved = true;
 	}
@@ -336,67 +334,6 @@ public class Board {
 		double x = boardLoc.getX() + (col+1)*tileOffset + col*tileSize;
 		double y = boardLoc.getY() + (row+1)*tileOffset + row*tileSize;
 		return new Location(x, y);
-	}
-	
-	/**
-	 * Picks a tile color and font color based on the value of a tile
-	 * 
-	 * @param val    the value of a tile
-	 * @return an array containing the tile color and font color
-	 */
-	private Color[] chooseTileColors(int val) {
-		Color[] colors = new Color[2];		
-		switch(val) {
-			case 2:
-				colors[0] = Color2048.TILE2;
-				colors[1] = Color2048.DARK_FONT;
-				break;
-			case 4:
-				colors[0] = Color2048.TILE4;
-				colors[1] = Color2048.DARK_FONT;
-				break;
-			case 8:
-				colors[0] = Color2048.TILE8;
-				colors[1] = Color2048.LIGHT_FONT;
-				break;
-			case 16:
-				colors[0] = Color2048.TILE16;
-				colors[1] = Color2048.LIGHT_FONT;
-				break;
-			case 32:
-				colors[0] = Color2048.TILE32;
-				colors[1] = Color2048.LIGHT_FONT;
-				break;
-			case 64:
-				colors[0] = Color2048.TILE64;
-				colors[1] = Color2048.LIGHT_FONT;
-				break;
-			case 128:
-				colors[0] = Color2048.TILE128;
-				colors[1] = Color2048.LIGHT_FONT;
-				break;
-			case 256:
-				colors[0] = Color2048.TILE256;
-				colors[1] = Color2048.LIGHT_FONT;
-				break;
-			case 512:
-				colors[0] = Color2048.TILE512;
-				colors[1] = Color2048.LIGHT_FONT;
-				break;
-			case 1024:
-				colors[0] = Color2048.TILE1024;
-				colors[1] = Color2048.LIGHT_FONT;
-				break;
-			case 2048:
-				colors[0] = Color2048.TILE2048;
-				colors[1] = Color2048.LIGHT_FONT;
-				break;
-			default:
-				colors[0] = Color2048.TILELARGE;
-				colors[1] = Color2048.LIGHT_FONT;
-				break;			
-		}
-		return colors;
 	}
 
 	/**
