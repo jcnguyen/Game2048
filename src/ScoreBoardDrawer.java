@@ -1,7 +1,7 @@
 import objectdraw.*;
 import java.awt.Color;
 
-public class ScoreBoardDisplay {
+public class ScoreBoardDrawer {
 	
 	private static final String TITLE = "SCORE";
 	private static final int BOX_WIDTH = 135;
@@ -16,11 +16,11 @@ public class ScoreBoardDisplay {
 	/**
 	 * Draws the score board.
 	 * 
-	 * @param loc  Coordinates where the score board is drawn.
+	 * @param location  Coordinates where the score board is drawn.
 	 * @param canvas  Canvas where the score board is drawn.
 	 */
-	public ScoreBoardDisplay(Location loc, DrawingCanvas canvas) {
-		location = loc;
+	public ScoreBoardDrawer(Location location, DrawingCanvas canvas) {
+		this.location = location;
 		this.canvas = canvas;
 		
 		drawBox();

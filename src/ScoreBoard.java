@@ -1,7 +1,8 @@
 import objectdraw.*;
 
-public class ScoreBoard extends ScoreBoardDisplay {
+public class ScoreBoard {
 	
+	private ScoreBoardDrawer scoreBoardDisplay;
 	private int score = 0;
 	
 	/**
@@ -11,7 +12,7 @@ public class ScoreBoard extends ScoreBoardDisplay {
 	 * @param canvas  Canvas where the score board is drawn.
 	 */
 	public ScoreBoard(Location loc, DrawingCanvas canvas) {
-		super(loc, canvas);
+		scoreBoardDisplay = new ScoreBoardDrawer(loc, canvas);
 		reset();
 	}
 	
@@ -20,7 +21,7 @@ public class ScoreBoard extends ScoreBoardDisplay {
 	 */
 	public void reset() {
 		score = 0;
-		update(score);
+		scoreBoardDisplay.reset();
 	}
 	
 	/**
@@ -30,6 +31,6 @@ public class ScoreBoard extends ScoreBoardDisplay {
 	 */
 	public void addToScore(int points) {
 		score += points;
-		update(score);
+		scoreBoardDisplay.update(score);
 	}
 }
