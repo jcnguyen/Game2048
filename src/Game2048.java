@@ -29,7 +29,7 @@ public class Game2048 extends WindowController implements KeyListener {
 	private static final Location BOARD_LOC = new Location(10, 150);
 	
 	// objects
-	private Board board;
+	private GameBoard board;
 	private GameOverBoard gameOverBoard;
 	private ResetButton resetButton;
 	private ScoreBoard scoreBoard;
@@ -133,7 +133,7 @@ public class Game2048 extends WindowController implements KeyListener {
 	}
 	
 	private void drawBoard() {		
-		board = new Board(BOARD_LOC, BOARD_SIZE, NUM_CELLS, TILE_SIZE, TILE_OFFSET, scoreBoard, canvas);
+		board = new GameBoard(BOARD_LOC, BOARD_SIZE, NUM_CELLS, TILE_SIZE, TILE_OFFSET, scoreBoard, canvas);
 	}
 
 	private void setupGame() {

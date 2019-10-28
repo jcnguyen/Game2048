@@ -1,6 +1,6 @@
 import objectdraw.*;
 
-public class Board {
+public class GameBoard {
 	
 	private static final int TILE_VALUE = 2;
 	private static final int WIN_TILE = 2048;
@@ -26,7 +26,7 @@ public class Board {
 	 * @param scoreBoard    the current score
 	 * @param canvas        where the board is drawn
 	 */
-	public Board(Location boardLoc, int size, int numCells, int tileSize, int tileOffset, ScoreBoard scoreBoard, DrawingCanvas canvas) {
+	public GameBoard(Location boardLoc, int size, int numCells, int tileSize, int tileOffset, ScoreBoard scoreBoard, DrawingCanvas canvas) {
 		this.numCells = numCells;
 		this.boardLoc = boardLoc;
 		this.tileSize = tileSize;
@@ -52,9 +52,9 @@ public class Board {
 	 *         false if there is an empty cell
 	 */
 	private boolean isBoardFull() {
-		for(int row = 0; row < numCells; row++) {
-			for(int col = 0; col < numCells; col++) {
-				if(board[row][col] == null) {
+		for (int row = 0; row < numCells; row++) {
+			for (int col = 0; col < numCells; col++) {
+				if (board[row][col] == null) {
 					return false;
 				}
 			}
