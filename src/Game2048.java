@@ -11,6 +11,8 @@ import java.awt.event.*;
  */
 public class Game2048 extends WindowController implements KeyListener {
 	
+	private static final String GAME_TITLE = "2048";
+	
 	// board and tile information
 	private static final int NUM_CELLS = 4;
 	private static final int TILE_OFFSET = 5; // space between tiles
@@ -114,9 +116,7 @@ public class Game2048 extends WindowController implements KeyListener {
 	}
 	
 	private void drawTitle() {
-		Text title = new Text("2048", TITLE_LOC, canvas);
-		title.setFontSize(TITLE_FONT_SIZE);
-		title.setColor(Color2048.DARK_FONT);
+		new Title(GAME_TITLE, TITLE_LOC, TITLE_FONT_SIZE, Color2048.DARK_FONT, canvas);
 	}
 	
 	private void drawGameOverObjects() {

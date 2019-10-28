@@ -50,9 +50,7 @@ public class ScoreBoardDisplay {
 	}
 	
 	private void drawTitle() {
-		Text title = new Text(TITLE, location, canvas);
-		title.setColor(Color.WHITE);
-		title.setFontSize(TEXT_SIZE);
+		Title title = new Title(TITLE, location, TEXT_SIZE, Color.WHITE, canvas);
 		centerText(title);
 	}
 	
