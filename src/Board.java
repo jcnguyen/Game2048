@@ -1,9 +1,8 @@
 import objectdraw.*;
-import java.awt.Color;
 
 public class Board {
 	
-	private static final int TILE_VALUE = 2048;
+	private static final int TILE_VALUE = 2;
 	private static final int WIN_TILE = 2048;
 
 	private boolean tileMoved; // remembers if a tile has been moved
@@ -12,7 +11,6 @@ public class Board {
 	private int tileOffset;
 	private DrawingCanvas canvas;
 	private Location boardLoc;
-	private int boardSize;
 	private ScoreBoard scoreBoard;
 	private RandomIntGenerator randGen; // generates random board position
 	private Tile[][] board;
@@ -31,35 +29,20 @@ public class Board {
 	public Board(Location boardLoc, int size, int numCells, int tileSize, int tileOffset, ScoreBoard scoreBoard, DrawingCanvas canvas) {
 		this.numCells = numCells;
 		this.boardLoc = boardLoc;
-		this.boardSize = size;
 		this.tileSize = tileSize;
 		this.tileOffset = tileOffset;
 		this.scoreBoard = scoreBoard;
 		this.canvas = canvas;
 		
-		drawEmptyBoard();
+		drawGameBoard(size);
 		
 		board = new Tile[numCells][numCells];
 		randGen = new RandomIntGenerator(0, numCells-1);
 		tileMoved = false;
 	}
-
-	private void drawEmptyBoard() {
-		drawBoardOutline();
-		drawCells();
-	}
-
-	private void drawBoardOutline() {
-		new FilledRect(boardLoc, boardSize, boardSize, canvas).setColor(Color2048.BOARD_BG);
-	}
 	
-	private void drawCells() {
-		for(int row = 0; row < numCells; row++) {
-			for(int col = 0; col < numCells; col++) {
-				Location cellLoc = posToCoord(row, col);
-				new FilledRect(cellLoc.getX(), cellLoc.getY(), tileSize, tileSize, canvas).setColor(Color2048.CELL_BG);
-			}
-		}
+	private void drawGameBoard(int size) {
+		new GameBoardDrawable(size, canvas);
 	}
 
 	/**
@@ -353,7 +336,7 @@ public class Board {
 	 * @param pos    the position (row, column) of a cell on the board
 	 * @return the corresponding coordinates of the position
 	 */
-	public Location posToCoord(int row, int col) {
+	private Location posToCoord(int row, int col) {
 		double x = boardLoc.getX() + (col+1)*tileOffset + col*tileSize;
 		double y = boardLoc.getY() + (row+1)*tileOffset + row*tileSize;
 		return new Location(x, y);
@@ -363,8 +346,8 @@ public class Board {
 	 * Resets the board.
 	 */
 	public void restart() {
-		for(int row = 0; row < numCells; row++) {
-			for(int col = 0; col < numCells; col++) {
+		for (int row = 0; row < numCells; row++) {
+			for (int col = 0; col < numCells; col++) {
 				if(board[row][col] != null) {
 					board[row][col].removeFromCanvas();
 					board[row][col] = null;
@@ -373,4 +356,35 @@ public class Board {
 		}
 	}	
 
+	class GameBoardDrawable {
+		
+		private DrawingCanvas canvas;
+		private int size;
+		
+		protected GameBoardDrawable(int size, DrawingCanvas canvas) {
+			this.size = size;
+			this.canvas = canvas;
+			
+			drawEmptyBoard();
+		}
+		
+		private void drawEmptyBoard() {
+			drawBoardOutline();
+			drawCells();
+		}
+
+		private void drawBoardOutline() {
+			new FilledRect(boardLoc, size, size, canvas).setColor(Color2048.BOARD_BG);
+		}
+		
+		private void drawCells() {
+			for(int row = 0; row < numCells; row++) {
+				for(int col = 0; col < numCells; col++) {
+					Location cellLoc = posToCoord(row, col);
+					new FilledRect(cellLoc.getX(), cellLoc.getY(), tileSize, tileSize, canvas).setColor(Color2048.CELL_BG);
+				}
+			}
+		}
+
+	}
 }
