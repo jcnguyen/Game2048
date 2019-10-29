@@ -344,12 +344,12 @@ public class GameBoard {
 		}
 	
 		protected void addTile(int row, int col, int tileValue) {
-			field[row][col] = new Tile(tileValue, posToCoord(row, col), tileSize, canvas);
+			field[row][col] = new Tile(tileValue, posToCoord(row, col), canvas);
 		}
 		
 		protected void addRandomTile() {
 			int[] position = randomlyChooseEmptyCell();
-			field[position[0]][position[1]] = new Tile(TILE_VALUE, posToCoord(position[0], position[1]), tileSize, canvas);
+			field[position[0]][position[1]] = new Tile(TILE_VALUE, posToCoord(position[0], position[1]), canvas);
 		}
 		
 		protected void removeTile(int row, int col) {
