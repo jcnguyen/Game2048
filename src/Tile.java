@@ -1,6 +1,8 @@
 import objectdraw.*;
 import java.awt.Color;
 
+import Constants.Color2048;
+
 public class Tile {
 	
 	private static final int FONT_SIZE = 40;

@@ -1,6 +1,8 @@
 import objectdraw.*;
 import java.awt.Color;
 
+import Constants.Color2048;
+
 public class ScoreBoard {
 	
 	private ScoreBoardDrawer scoreBoardDisplay;

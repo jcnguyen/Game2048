@@ -1,10 +1,6 @@
+package Constants;
 import java.awt.Color;
 
-/**
- * Color2048.java
- * 
- * Describes the color scheme of the game 2048. 
- */
 public class Color2048 {
 	
 	// background colors

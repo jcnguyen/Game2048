@@ -1,3 +1,4 @@
+import Constants.Color2048;
 import objectdraw.*;
 
 public class GameBoard {

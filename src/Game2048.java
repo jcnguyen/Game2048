@@ -1,5 +1,6 @@
 import objectdraw.*;
 import java.awt.event.*;
+import Constants.Color2048;
 
 /**
  * Game2048.java
