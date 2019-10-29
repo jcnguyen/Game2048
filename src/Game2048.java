@@ -99,7 +99,7 @@ public class Game2048 extends WindowController implements KeyListener {
 					board.moveRight();
 				}
 				keyDown = true;
-				if (board.istile2048()) {
+				if (board.hasWinningTile()) {
 					gameWin();
 				}
 			}
@@ -139,7 +139,7 @@ public class Game2048 extends WindowController implements KeyListener {
 	private void setupGame() {
 		gameOverBoard.hide();
 		setupArrowKeyListener();
-		board.addTile();
+		board.addRandomTile();
 	}
 	
 	private void setupArrowKeyListener() {
@@ -154,10 +154,10 @@ public class Game2048 extends WindowController implements KeyListener {
 	 */
 	private void restart() {
 		activatedGameOver = false;
-		board.restart();
+		board.reset();
 		scoreBoard.reset();
 		gameOverBoard.hide();
-		board.addTile();
+		board.addRandomTile();
 	}
 	
 	/**

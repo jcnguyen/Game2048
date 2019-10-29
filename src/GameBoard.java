@@ -3,17 +3,16 @@ import objectdraw.*;
 public class GameBoard {
 	
 	private static final int TILE_VALUE = 2;
-	private static final int WIN_TILE = 2048;
+	
 
-	private boolean tileMoved; // remembers if a tile has been moved
+	private boolean hasATileMoved; // remembers if a tile has been moved
 	private int numCells;
 	private int tileSize;
 	private int tileOffset;
 	private DrawingCanvas canvas;
 	private Location boardLoc;
 	private ScoreBoard scoreBoard;
-	private RandomIntGenerator randGen; // generates random board position
-	private Tile[][] board;
+	private Field field;
 
 	/**
 	 * Constructs the board.
@@ -36,9 +35,8 @@ public class GameBoard {
 		
 		drawGameBoard(size);
 		
-		board = new Tile[numCells][numCells];
-		randGen = new RandomIntGenerator(0, numCells-1);
-		tileMoved = false;
+		field = new Field(numCells);
+		hasATileMoved = false;
 	}
 	
 	private void drawGameBoard(int size) {
@@ -46,63 +44,22 @@ public class GameBoard {
 	}
 
 	/**
-	 * Determines if the board is full.
+	 * Checks if the player can make a legal move.
 	 * 
-	 * @return true if all the cells of the board contains a tile,
-	 *         false if there is an empty cell
-	 */
-	private boolean isBoardFull() {
-		for (int row = 0; row < numCells; row++) {
-			for (int col = 0; col < numCells; col++) {
-				if (board[row][col] == null) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-
-	/**
-	 * Determines if the player can make a legal move.
-	 * 
-	 * @return true if the player can legally move at least one tile,
-	 *         false otherwise
+	 * @return True if the player can legally move at least one tile;
+	 *         false otherwise.
 	 */
 	public boolean canMove() {
-		if(!isBoardFull()) {
-			return true;
-		} else {
-			// checks if there are adjacent tiles with the same value
-			for(int row = 0; row < numCells; row++) { // row-major
-				for(int col = 1; col < numCells; col++) {
-					if(board[row][col].getValue() == board[row][col-1].getValue()) {
-						return true;
-					}
-				}
-			}
-			for(int col = 0; col < numCells; col++) { // column-major
-				for(int row = 1; row < numCells; row++) {
-					if(board[row][col].getValue() == board[row-1][col].getValue()) {
-						return true;
-					}
-				}
-			}
-			return false;
-		}
+		return field.hasEmptyCell() || field.hasAdjacentTilesWithSameValue();
 	}
 	
-	public boolean istile2048() {
-		// checks if there is a 2048 tile
-		for(int row = 0; row < numCells; row++) { // row-major
-			for(int col = 0; col < numCells; col++) {
-				if(board[row][col] != null) {
-					if(board[row][col].getValue() == WIN_TILE) {
-						return true;
-					}
-				}
-			}
-		}
-		return false;
+	/**
+	 * Checks if there's a winning tile.
+	 *  
+	 * @return True if there is; false otherwise.
+	 */
+	public boolean hasWinningTile() {
+		return field.hasWinningTile();
 	}
 
 	/**
@@ -110,29 +67,17 @@ public class GameBoard {
 	 * 
 	 * @pre the board is not full
 	 */
-	public void addTile() {
-		// randomly choose an empty cell
-		int row = randGen.nextValue();
-		int col = randGen.nextValue();
-		while (board[row][col] != null) {
-			row = randGen.nextValue();
-			col = randGen.nextValue();
-		}
-
-		// add a tile to that cell
-		Location cellLoc = posToCoord(row, col);
-		board[row][col] = new Tile(TILE_VALUE, cellLoc, tileSize, canvas);
+	public void addRandomTile() {
+		// todo check that board isn't full;
+		
+		field.addRandomTile();
 	}
-
+	
 	/**
-	 * Removes the tile at position (row, col).
-	 * 
-	 * @param row    the row that the tile is located
-	 * @param col    the column that the tile is located
+	 * Resets the board.
 	 */
-	private void removeTile(int row, int col) {
-		board[row][col].removeFromCanvas();
-		board[row][col] = null;
+	public void reset() {
+		field.reset();
 	}
 
 	/**
@@ -146,42 +91,41 @@ public class GameBoard {
 	 * @param col2    the col position of cell2
 	 */
 	private void moveMergeTile(int row1, int col1, int row2, int col2) {
-		// get information on tiles
-		int val1 = (board[row1][col1] == null ? 0 : board[row1][col1].getValue());
-		int val2 = board[row2][col2].getValue();
-		if(board[row1][col1] != null) removeTile(row1, col1);
-		removeTile(row2, col2);
+		int valOfTile1 = field.emptyAt(row1, col1) ? 0 : field.getTileValue(row1, col1);
+		int valOfTile2 = field.getTileValue(row2, col2);
+		if (!field.emptyAt(row1, col1)) {
+			field.removeTile(row1, col1);
+		}
+		field.removeTile(row2, col2);
 		
-		// calculate information used to construct the new tile
-		int newVal = val1 + val2;
-		Location cellLoc = posToCoord(row1, col1);
-		
-		// construct the new tile and update
-		board[row1][col1] = new Tile(newVal, cellLoc, tileSize, canvas);
+		int newVal = valOfTile1 + valOfTile2;
+		field.addTile(row1, col1, newVal);
 		scoreBoard.addToScore(newVal);
-		tileMoved = true;
+		hasATileMoved = true;
 	}
+	
 
 	/**
 	 * Moves tiles to the left. 
 	 */
 	public void moveLeft() {
-		tileMoved = false;
+		hasATileMoved = false;
 
 		// move or merge every tile on the board
 		for (int row = 0; row < numCells; row++) {
 			boolean tileMerged = false; // prevents tile from merging twice
+			
 			for (int col = 1; col < numCells; col++) { 
-				if (board[row][col] != null) { // find tile 1
+				if (!field.emptyAt(row, col)) { // find tile 1
 					int col2 = col-1;
-					while ((board[row][col2] == null) && (col2-1 > -1)) {
+					while ((field.emptyAt(row, col2)) && (col2-1 > -1)) {
 						col2--;
 					}
 
-					if (board[row][col2] != null) { // find tile 2
+					if (!field.emptyAt(row, col2)) { // find tile 2
 						// move or merge tile 1
-						int val1 = board[row][col].getValue();
-						int val2 = board[row][col2].getValue();
+						int val1 = field.getTileValue(row, col);
+						int val2 = field.getTileValue(row, col2);
 						if (val1 == val2 && !tileMerged) {
 							tileMerged = true;
 						} else {
@@ -191,16 +135,15 @@ public class GameBoard {
 					} 
 
 					// move or merge here
-					if(col2 != col) { 
+					if (col2 != col) { 
 						moveMergeTile(row, col2, row, col); 
 					}
 				}
 			}
 		}
 
-		// add tile if a move/merge occurred
-		if(tileMoved) {
-			addTile();
+		if (hasATileMoved) {
+			addRandomTile();
 		}
 	}
 
@@ -208,22 +151,22 @@ public class GameBoard {
 	 * Moves tiles to the right. 
 	 */
 	public void moveRight() {
-		tileMoved = false;
+		hasATileMoved = false;
 
 		// move or merge every tile on the board
 		for (int row = 0; row < numCells; row++) {
 			boolean tileMerged = false; // prevents tile from merging twice
 			for (int col = numCells - 2; col > -1; col--) {
-				if (board[row][col] != null) { // find tile 1
+				if (!field.emptyAt(row, col)) { // find tile 1
 					int col2 = col+1;
-					while ((board[row][col2] == null) && (col2+1 < numCells)) {
+					while ((field.emptyAt(row, col2)) && (col2+1 < numCells)) {
 						col2++;
 					}
 
-					if (board[row][col2] != null) { // find tile 2
+					if (!field.emptyAt(row, col2)) { // find tile 2
 						// move or merge tile 1
-						int val1 = board[row][col].getValue();
-						int val2 = board[row][col2].getValue();
+						int val1 = field.getTileValue(row, col);
+						int val2 = field.getTileValue(row, col2);
 						if (val1 == val2 && !tileMerged) {
 							tileMerged = true;
 						} else {
@@ -241,8 +184,8 @@ public class GameBoard {
 		}
 
 		// add tile if a move/merge occurred
-		if(tileMoved) {
-			addTile();
+		if (hasATileMoved) {
+			addRandomTile();
 		}
 	}
 
@@ -250,22 +193,22 @@ public class GameBoard {
 	 * Moves tiles upward. 
 	 */
 	public void moveUp() {
-		tileMoved = false;
+		hasATileMoved = false;
 
 		// move or merge every tile on the board
 		for (int col = 0; col < numCells; col++) {
 			boolean tileMerged = false; // prevents tile from merging twice
 			for (int row = 1; row < numCells; row++) {
-				if (board[row][col] != null) { // find tile 1
+				if (!field.emptyAt(row, col)) { // find tile 1
 					int row2 = row-1;
-					while ((board[row2][col] == null) && (row2-1 > -1)) {
+					while ((field.emptyAt(row2, col)) && (row2-1 > -1)) {
 						row2--;
 					}
 
-					if (board[row2][col] != null) { // find tile 2
+					if (!field.emptyAt(row2, col)) { // find tile 2
 						// move or merge tile 1
-						int val1 = board[row][col].getValue();
-						int val2 = board[row2][col].getValue();
+						int val1 = field.getTileValue(row, col);
+						int val2 = field.getTileValue(row2, col);
 						if (val1 == val2 && !tileMerged) {
 							tileMerged = true;
 						} else {
@@ -283,8 +226,8 @@ public class GameBoard {
 		}
 
 		// add tile if a move/merge occurred
-		if(tileMoved) {
-			addTile();
+		if(hasATileMoved) {
+			addRandomTile();
 		}
 	}
 
@@ -292,22 +235,22 @@ public class GameBoard {
 	 * Moves tiles downward. 
 	 */
 	public void moveDown() {
-		tileMoved = false;
+		hasATileMoved = false;
 
 		// move or merge every tile on the board
 		for (int col = 0; col < numCells; col++) {
 			boolean tileMerged = false; // prevents tile from merging twice
 			for (int row = numCells - 2; row > -1; row--) {
-				if (board[row][col] != null) { // find tile 1
+				if (!field.emptyAt(row, col)) { // find tile 1
 					int row2 = row+1;
-					while ((board[row2][col] == null) && (row2+1 < numCells)) {
+					while ((field.emptyAt(row2, col)) && (row2+1 < numCells)) {
 						row2++;
 					}
 
-					if (board[row2][col] != null) { // find tile 2
+					if (!field.emptyAt(row2, col)) { // find tile 2
 						// move or merge tile 1
-						int val1 = board[row][col].getValue();
-						int val2 = board[row2][col].getValue();
+						int val1 = field.getTileValue(row, col);
+						int val2 = field.getTileValue(row2, col);
 						if (val1 == val2 && !tileMerged) {
 							tileMerged = true;
 						} else {
@@ -325,8 +268,8 @@ public class GameBoard {
 		}
 
 		// add tile if a move/merge occurred
-		if(tileMoved) {
-			addTile();
+		if(hasATileMoved) {
+			addRandomTile();
 		}
 	}
 
@@ -341,20 +284,112 @@ public class GameBoard {
 		double y = boardLoc.getY() + (row+1)*tileOffset + row*tileSize;
 		return new Location(x, y);
 	}
-
-	/**
-	 * Resets the board.
-	 */
-	public void restart() {
-		for (int row = 0; row < numCells; row++) {
-			for (int col = 0; col < numCells; col++) {
-				if(board[row][col] != null) {
-					board[row][col].removeFromCanvas();
-					board[row][col] = null;
+	
+	class Field {
+		
+		private static final int WIN_TILE = 2048;
+		
+		private Tile[][] field;
+		private int numCells;
+		private RandomIntGenerator randomPositionGenerator; 
+		
+		protected Field(int numCells) {
+			this.numCells = numCells;
+			
+			field = new Tile[numCells][numCells];
+			randomPositionGenerator = new RandomIntGenerator(0, numCells - 1);
+		}
+		
+		protected boolean hasEmptyCell() {
+			for (int row = 0; row < numCells; row++) {
+				for (int col = 0; col < numCells; col++) {
+					if (field[row][col] == null) {
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+		
+		protected boolean hasAdjacentTilesWithSameValue() {
+			for (int row = 0; row < numCells; row++) {
+				for (int col = 1; col < numCells; col++) {
+					if (field[row][col].getValue() == field[row][col-1].getValue()) {
+						return true;
+					}
+				}
+			}
+			
+			for (int col = 0; col < numCells; col++) { 
+				for (int row = 1; row < numCells; row++) {
+					if (field[row][col].getValue() == field[row-1][col].getValue()) {
+						return true;
+					}
+				}
+			}
+			
+			return false;
+		}
+		
+		protected boolean hasWinningTile() {
+			for (int row = 0; row < numCells; row++) {
+				for (int col = 0; col < numCells; col++) {
+					if (field[row][col] != null && field[row][col].getValue() == WIN_TILE) {
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+	
+		protected void addTile(int row, int col, int tileValue) {
+			field[row][col] = new Tile(tileValue, posToCoord(row, col), tileSize, canvas);
+		}
+		
+		protected void addRandomTile() {
+			int[] position = randomlyChooseEmptyCell();
+			field[position[0]][position[1]] = new Tile(TILE_VALUE, posToCoord(position[0], position[1]), tileSize, canvas);
+		}
+		
+		protected void removeTile(int row, int col) {
+			field[row][col].removeFromCanvas();
+			field[row][col] = null;
+		}
+		
+		protected void reset() {
+			for (int row = 0; row < numCells; row++) {
+				for (int col = 0; col < numCells; col++) {
+					if (field[row][col] != null) {
+						removeTile(row, col);
+					}
 				}
 			}
 		}
-	}	
+		
+		protected Tile getTile(int row, int col) {
+			return field[row][col];
+		}
+		
+		protected int getTileValue(int row, int col) {
+			return getTile(row, col).getValue();
+		}
+		
+		protected Boolean emptyAt(int row, int col) {
+			return field[row][col] == null;
+		}
+		
+		private int[] randomlyChooseEmptyCell() {
+			int row = randomPositionGenerator.nextValue();
+			int col = randomPositionGenerator.nextValue();
+			while (field[row][col] != null) {
+				row = randomPositionGenerator.nextValue();
+				col = randomPositionGenerator.nextValue();
+			}
+			
+			int[] ret = {row, col};
+			return ret;
+		}
+	}
 
 	class GameBoardDrawable {
 		
