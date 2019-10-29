@@ -1,5 +1,6 @@
 import java.awt.Color;
 import Constants.Color2048;
+import Constants.TileStyle;
 
 public class TileColorScheme {
 
@@ -21,54 +22,53 @@ public class TileColorScheme {
 	private void selectColorScheme(int val) {
 		switch (val) {
 		case 2:
-			backgroundColor = Color2048.TILE2;
+			backgroundColor = TileStyle.BACKGROUND_2;
 			textColor = Color2048.DARK_FONT;
 			break;
 		case 4:
-			backgroundColor = Color2048.TILE4;
+			backgroundColor = TileStyle.BACKGROUND_4;
 			textColor = Color2048.DARK_FONT;
 			break;
 		case 8:
-			backgroundColor = Color2048.TILE8;
+			backgroundColor = TileStyle.BACKGROUND_8;
 			textColor = Color2048.LIGHT_FONT;
 			break;
 		case 16:
-			backgroundColor = Color2048.TILE16;
+			backgroundColor = TileStyle.BACKGROUND_16;
 			textColor = Color2048.LIGHT_FONT;
 			break;
 		case 32:
-			backgroundColor = Color2048.TILE32;
+			backgroundColor = TileStyle.BACKGROUND_32;
 			textColor = Color2048.LIGHT_FONT;
 			break;
 		case 64:
-			backgroundColor = Color2048.TILE64;
+			backgroundColor = TileStyle.BACKGROUND_64;
 			textColor = Color2048.LIGHT_FONT;
 			break;
 		case 128:
-			backgroundColor = Color2048.TILE128;
+			backgroundColor = TileStyle.BACKGROUND_128;
 			textColor = Color2048.LIGHT_FONT;
 			break;
 		case 256:
-			backgroundColor = Color2048.TILE256;
+			backgroundColor = TileStyle.BACKGROUND_256;
 			textColor = Color2048.LIGHT_FONT;
 			break;
 		case 512:
-			backgroundColor = Color2048.TILE512;
+			backgroundColor = TileStyle.BACKGROUND_512;
 			textColor = Color2048.LIGHT_FONT;
 			break;
 		case 1024:
-			backgroundColor = Color2048.TILE1024;
+			backgroundColor = TileStyle.BACKGROUND_1024;
 			textColor = Color2048.LIGHT_FONT;
 			break;
 		case 2048:
-			backgroundColor = Color2048.TILE2048;
+			backgroundColor = TileStyle.BACKGROUND_2048;
 			textColor = Color2048.LIGHT_FONT;
 			break;
 		default:
-			backgroundColor = Color2048.TILELARGE;
+			backgroundColor = TileStyle.BACKGROUND_DEFAULT;
 			textColor = Color2048.LIGHT_FONT;
 			break;
 		}
 	}
-
 }
