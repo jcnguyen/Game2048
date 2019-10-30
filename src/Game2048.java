@@ -20,7 +20,6 @@ public class Game2048 extends WindowController implements KeyListener {
 	private ResetButton resetButton;
 	private ScoreBoard scoreBoard;
 
-	private boolean gameOver = false;
 	private boolean isKeyPressed = false;
 
 	public void begin() {
@@ -48,23 +47,15 @@ public class Game2048 extends WindowController implements KeyListener {
 		}
 		isKeyPressed = true;
 
-		if (!board.hasLegalMove() && !gameOver) {
-			gameLose();
+		int keyCode = e.getKeyCode();
+		if (isArrowKey(keyCode)) {
+			board.moveBoard(keyCode);
 		}
+	}
 
-		if (e.getKeyCode() == KeyEvent.VK_UP) {
-			board.moveUp();
-		} else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-			board.moveDown();
-		} else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-			board.moveLeft();
-		} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-			board.moveRight();
-		}
-
-		if (board.hasWinningTile()) {
-			gameWin();
-		}
+	private Boolean isArrowKey(int keyEvent) {
+		return keyEvent == KeyEvent.VK_UP || keyEvent == KeyEvent.VK_DOWN || keyEvent == KeyEvent.VK_LEFT
+				|| keyEvent == KeyEvent.VK_RIGHT;
 	}
 
 	private void setupArrowKeyListener() {
@@ -106,19 +97,8 @@ public class Game2048 extends WindowController implements KeyListener {
 	}
 
 	private void resetGame() {
-		gameOver = false;
 		scoreBoard.reset();
 		board.reset();
 		board.addRandomTile();
-	}
-
-	private void gameLose() {
-		gameOver = true;
-		board.gameLose();
-	}
-
-	private void gameWin() {
-		gameOver = true;
-		board.gameWin();
 	}
 }

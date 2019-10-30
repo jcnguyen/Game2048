@@ -1,4 +1,7 @@
 import objectdraw.*;
+
+import java.awt.event.KeyEvent;
+
 import Constants.Game2048Style;
 import Constants.GameBoardStyle;
 
@@ -16,6 +19,7 @@ public class GameBoard {
 	private ScoreBoard scoreBoard;
 	private Field field;
 	private GameOverBoard gameOverBoard;
+	private boolean gameOver = false;
 
 	/**
 	 * Constructs the board.
@@ -43,6 +47,30 @@ public class GameBoard {
 
 		field = new Field(numCells);
 		hasATileMoved = false;
+	}
+
+	public void moveBoard(int keyEvent) {
+		if (gameOver) {
+			return;
+		}
+
+		if (!hasLegalMove()) {
+			gameLose();
+		}
+
+		if (keyEvent == KeyEvent.VK_UP) {
+			moveUp();
+		} else if (keyEvent == KeyEvent.VK_DOWN) {
+			moveDown();
+		} else if (keyEvent == KeyEvent.VK_LEFT) {
+			moveLeft();
+		} else if (keyEvent == KeyEvent.VK_RIGHT) {
+			moveRight();
+		}
+
+		if (hasWinningTile()) {
+			gameWin();
+		}
 	}
 
 	private void drawGameBoard() {
@@ -73,10 +101,12 @@ public class GameBoard {
 	}
 
 	public void gameLose() {
+		gameOver = true;
 		gameOverBoard.activateLosingBoard();
 	}
 
 	public void gameWin() {
+		gameOver = true;
 		gameOverBoard.activateWinningBoard();
 	}
 
@@ -95,8 +125,9 @@ public class GameBoard {
 	 * Resets the board.
 	 */
 	public void reset() {
-		field.reset();
+		gameOver = false;
 		gameOverBoard.hide();
+		field.reset();
 	}
 
 	/**
