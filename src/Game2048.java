@@ -82,7 +82,9 @@ public class Game2048 extends WindowController implements KeyListener {
 	}
 
 	private void drawScoreBoard() {
-		scoreBoard = new ScoreBoard(Game2048Style.SCORE_LOC, canvas);
+		if (scoreBoard == null) {
+			scoreBoard = new ScoreBoard(Game2048Style.SCORE_LOC, canvas);
+		}
 	}
 
 	private void drawResetButton() {
@@ -90,6 +92,10 @@ public class Game2048 extends WindowController implements KeyListener {
 	}
 
 	private void drawBoard() {
+		if (scoreBoard == null) {
+			drawScoreBoard();
+		}
+
 		board = new GameBoard(Game2048Style.BOARD_LOC, BOARD_SIZE, NUM_CELLS, TILE_SIZE, TILE_OFFSET, scoreBoard,
 				canvas);
 	}
