@@ -20,17 +20,18 @@ public class Game2048 extends WindowController implements KeyListener {
 	private ResetButton resetButton;
 	private ScoreBoard scoreBoard;
 
-	private boolean activatedGameOver = false;
-	private boolean keyDown = false;
+	private boolean gameOver = false;
+	private boolean isKeyPressed = false;
 
 	public void begin() {
+		setupArrowKeyListener();
 		drawGame();
-		setupGame();
+		resetGame();
 	}
 
 	public void onMouseClick(Location point) {
 		if (resetButton.isClicked(point)) {
-			restart();
+			resetGame();
 		}
 	}
 
@@ -38,29 +39,39 @@ public class Game2048 extends WindowController implements KeyListener {
 	}
 
 	public void keyReleased(KeyEvent e) {
-		keyDown = false;
+		isKeyPressed = false;
 	}
 
 	public void keyPressed(KeyEvent e) {
-		if (!isGameOver()) {
-			if (!keyDown) {
-				if (e.getKeyCode() == KeyEvent.VK_UP) {
-					board.moveUp();
-				} else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-					board.moveDown();
-				} else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-					board.moveLeft();
-				} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-					board.moveRight();
-				}
-				keyDown = true;
-				if (board.hasWinningTile()) {
-					gameWin();
-				}
-			}
-		} else if (!activatedGameOver) {
-			gameOver();
+		if (isKeyPressed) {
+			return;
 		}
+		isKeyPressed = true;
+
+		if (!board.hasLegalMove() && !gameOver) {
+			gameLose();
+		}
+
+		if (e.getKeyCode() == KeyEvent.VK_UP) {
+			board.moveUp();
+		} else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+			board.moveDown();
+		} else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+			board.moveLeft();
+		} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+			board.moveRight();
+		}
+
+		if (board.hasWinningTile()) {
+			gameWin();
+		}
+	}
+
+	private void setupArrowKeyListener() {
+		requestFocus();
+		addKeyListener(this);
+		setFocusable(true);
+		canvas.addKeyListener(this);
 	}
 
 	private void drawGame() {
@@ -94,37 +105,20 @@ public class Game2048 extends WindowController implements KeyListener {
 				canvas);
 	}
 
-	private void setupGame() {
-		setupArrowKeyListener();
-		board.reset();
-		board.addRandomTile();
-	}
-
-	private void setupArrowKeyListener() {
-		requestFocus();
-		addKeyListener(this);
-		setFocusable(true);
-		canvas.addKeyListener(this);
-	}
-
-	private void restart() {
-		activatedGameOver = false;
-		board.reset();
+	private void resetGame() {
+		gameOver = false;
 		scoreBoard.reset();
+		board.reset();
 		board.addRandomTile();
 	}
 
-	private boolean isGameOver() {
-		return !board.canMove();
-	}
-
-	private void gameOver() {
-		activatedGameOver = true;
-		board.gameOver();
+	private void gameLose() {
+		gameOver = true;
+		board.gameLose();
 	}
 
 	private void gameWin() {
-		activatedGameOver = true;
+		gameOver = true;
 		board.gameWin();
 	}
 }

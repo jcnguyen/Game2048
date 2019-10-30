@@ -59,7 +59,7 @@ public class GameBoard {
 	 * @return True if the player can legally move at least one tile; false
 	 *         otherwise.
 	 */
-	public boolean canMove() {
+	public boolean hasLegalMove() {
 		return field.hasEmptyCell() || field.hasAdjacentTilesWithSameValue();
 	}
 
@@ -72,7 +72,7 @@ public class GameBoard {
 		return field.hasWinningTile();
 	}
 
-	public void gameOver() {
+	public void gameLose() {
 		gameOverBoard.activateLosingBoard();
 	}
 
