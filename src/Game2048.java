@@ -17,7 +17,6 @@ public class Game2048 extends WindowController implements KeyListener {
 	private static final int BOARD_SIZE = (NUM_CELLS + 1) * TILE_OFFSET + NUM_CELLS * TILE_SIZE;
 
 	private GameBoard board;
-	private GameOverBoard gameOverBoard;
 	private ResetButton resetButton;
 	private ScoreBoard scoreBoard;
 
@@ -68,17 +67,12 @@ public class Game2048 extends WindowController implements KeyListener {
 		drawTitle();
 		drawScoreBoard();
 		drawResetButton();
-		drawGameOverBoard();
 		drawBoard();
 	}
 
 	private void drawTitle() {
 		new Title(Strings.GAME_TITLE, Game2048Style.TITLE_LOC, Game2048Style.TITLE_TEXT_SIZE, Game2048Style.TITLE_COLOR,
 				canvas);
-	}
-
-	private void drawGameOverBoard() {
-		gameOverBoard = new GameOverBoard(Game2048Style.BOARD_LOC, BOARD_SIZE, canvas);
 	}
 
 	private void drawScoreBoard() {
@@ -101,8 +95,8 @@ public class Game2048 extends WindowController implements KeyListener {
 	}
 
 	private void setupGame() {
-		gameOverBoard.hide();
 		setupArrowKeyListener();
+		board.reset();
 		board.addRandomTile();
 	}
 
@@ -117,7 +111,6 @@ public class Game2048 extends WindowController implements KeyListener {
 		activatedGameOver = false;
 		board.reset();
 		scoreBoard.reset();
-		gameOverBoard.hide();
 		board.addRandomTile();
 	}
 
@@ -127,11 +120,11 @@ public class Game2048 extends WindowController implements KeyListener {
 
 	private void gameOver() {
 		activatedGameOver = true;
-		gameOverBoard.activateLosingBoard();
+		board.gameOver();
 	}
 
 	private void gameWin() {
 		activatedGameOver = true;
-		gameOverBoard.activateWinningBoard();
+		board.gameWin();
 	}
 }

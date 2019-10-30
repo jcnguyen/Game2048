@@ -1,4 +1,5 @@
 import objectdraw.*;
+import Constants.Game2048Style;
 import Constants.GameBoardStyle;
 
 public class GameBoard {
@@ -7,12 +8,14 @@ public class GameBoard {
 
 	private boolean hasATileMoved; // remembers if a tile has been moved
 	private int numCells;
+	private int size;
 	private int tileSize;
 	private int tileOffset;
 	private DrawingCanvas canvas;
 	private Location boardLoc;
 	private ScoreBoard scoreBoard;
 	private Field field;
+	private GameOverBoard gameOverBoard;
 
 	/**
 	 * Constructs the board.
@@ -29,19 +32,25 @@ public class GameBoard {
 			DrawingCanvas canvas) {
 		this.numCells = numCells;
 		this.boardLoc = boardLoc;
+		this.size = size;
 		this.tileSize = tileSize;
 		this.tileOffset = tileOffset;
 		this.scoreBoard = scoreBoard;
 		this.canvas = canvas;
 
-		drawGameBoard(size);
+		drawGameBoard();
+		drawGameOverBoard();
 
 		field = new Field(numCells);
 		hasATileMoved = false;
 	}
 
-	private void drawGameBoard(int size) {
+	private void drawGameBoard() {
 		new GameBoardDrawable(boardLoc, size, numCells, tileSize, canvas);
+	}
+
+	private void drawGameOverBoard() {
+		gameOverBoard = new GameOverBoard(Game2048Style.BOARD_LOC, size, canvas);
 	}
 
 	/**
@@ -63,6 +72,14 @@ public class GameBoard {
 		return field.hasWinningTile();
 	}
 
+	public void gameOver() {
+		gameOverBoard.activateLosingBoard();
+	}
+
+	public void gameWin() {
+		gameOverBoard.activateWinningBoard();
+	}
+
 	/**
 	 * Randomly adds a tile to the board.
 	 * 
@@ -79,6 +96,7 @@ public class GameBoard {
 	 */
 	public void reset() {
 		field.reset();
+		gameOverBoard.hide();
 	}
 
 	/**
