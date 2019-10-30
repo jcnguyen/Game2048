@@ -1,9 +1,8 @@
 import objectdraw.*;
 import Constants.ResetButtonStyle;
+import Constants.Strings;
 
 public class ResetButton {
-
-	private static final String TITLE = "RESET";
 
 	private DrawingCanvas canvas;
 	private Location location;
@@ -28,7 +27,8 @@ public class ResetButton {
 	}
 
 	private void drawTitle() {
-		Title title = new Title(TITLE, location, ResetButtonStyle.TEXT_SIZE, ResetButtonStyle.TEXT_COLOR, canvas);
+		Title title = new Title(Strings.RESET_TITLE, location, ResetButtonStyle.TEXT_SIZE, ResetButtonStyle.TEXT_COLOR,
+				canvas);
 		centerText(title);
 	}
 

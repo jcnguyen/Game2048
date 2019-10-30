@@ -1,6 +1,7 @@
 import objectdraw.*;
 import java.awt.event.*;
 import Constants.Game2048Style;
+import Constants.Strings;
 
 /**
  * 2048 is a game in which player combines tiles to get a 2048 tile. Player
@@ -9,8 +10,6 @@ import Constants.Game2048Style;
  * Suggested Window Size: 445x585
  */
 public class Game2048 extends WindowController implements KeyListener {
-
-	private static final String GAME_TITLE = "2048";
 
 	private static final int NUM_CELLS = 4;
 	private static final int TILE_OFFSET = 5;
@@ -74,7 +73,8 @@ public class Game2048 extends WindowController implements KeyListener {
 	}
 
 	private void drawTitle() {
-		new Title(GAME_TITLE, Game2048Style.TITLE_LOC, Game2048Style.TITLE_TEXT_SIZE, Game2048Style.TITLE_COLOR, canvas);
+		new Title(Strings.GAME_TITLE, Game2048Style.TITLE_LOC, Game2048Style.TITLE_TEXT_SIZE, Game2048Style.TITLE_COLOR,
+				canvas);
 	}
 
 	private void drawGameOverBoard() {
@@ -90,7 +90,8 @@ public class Game2048 extends WindowController implements KeyListener {
 	}
 
 	private void drawBoard() {
-		board = new GameBoard(Game2048Style.BOARD_LOC, BOARD_SIZE, NUM_CELLS, TILE_SIZE, TILE_OFFSET, scoreBoard, canvas);
+		board = new GameBoard(Game2048Style.BOARD_LOC, BOARD_SIZE, NUM_CELLS, TILE_SIZE, TILE_OFFSET, scoreBoard,
+				canvas);
 	}
 
 	private void setupGame() {
@@ -117,7 +118,7 @@ public class Game2048 extends WindowController implements KeyListener {
 	private boolean isGameOver() {
 		return !board.canMove();
 	}
-	
+
 	private void gameOver() {
 		activatedGameOver = true;
 		gameOverBoard.activateLosingBoard();

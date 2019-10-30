@@ -1,10 +1,8 @@
 import objectdraw.*;
 import Constants.GameOverBoardStyle;
+import Constants.Strings;
 
 public class GameOverBoard {
-
-	private static final String WIN_TEXT = "YOU WIN!";
-	private static final String GAME_OVER_TEXT = "GAME OVER";
 
 	private DrawingCanvas canvas;
 	private Location location;
@@ -29,13 +27,13 @@ public class GameOverBoard {
 
 	public void activateLosingBoard() {
 		showElements();
-		text.setText(GAME_OVER_TEXT);
+		text.setText(Strings.LOSE_TEXT);
 		centerText(text);
 	}
 
 	public void activateWinningBoard() {
 		showElements();
-		text.setText(WIN_TEXT);
+		text.setText(Strings.WIN_TEXT);
 		centerText(text);
 	}
 
@@ -45,7 +43,7 @@ public class GameOverBoard {
 	}
 
 	private void drawText() {
-		text = new Text(GAME_OVER_TEXT, calculateTextLocation(), canvas);
+		text = new Text(Strings.LOSE_TEXT, calculateTextLocation(), canvas);
 		text.setFontSize(GameOverBoardStyle.TEXT_SIZE);
 		centerText(text);
 	}

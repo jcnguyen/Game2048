@@ -1,5 +1,6 @@
 import objectdraw.*;
 import Constants.ScoreBoardStyle;
+import Constants.Strings;
 
 public class ScoreBoard {
 
@@ -23,12 +24,11 @@ public class ScoreBoard {
 
 	class ScoreBoardDrawer {
 
-		private static final String TITLE = "SCORE";
 		private static final int DEFAULT_SCORE = 0;
 
 		private DrawingCanvas canvas;
 		private Location location;
-		
+
 		private Text scoreDisplay;
 
 		protected ScoreBoardDrawer(Location location, DrawingCanvas canvas) {
@@ -55,7 +55,8 @@ public class ScoreBoard {
 		}
 
 		private void drawTitle() {
-			Title title = new Title(TITLE, location, ScoreBoardStyle.TEXT_SIZE, ScoreBoardStyle.TEXT_COLOR, canvas);
+			Title title = new Title(Strings.SCORE_TITLE, location, ScoreBoardStyle.TEXT_SIZE,
+					ScoreBoardStyle.TEXT_COLOR, canvas);
 			centerText(title);
 		}
 
