@@ -1,79 +1,104 @@
 import objectdraw.*;
 import java.awt.Color;
 
-/**
- * ScoreBoard.java
- *
- * Keeps track of the score.
- */
 public class ScoreBoard {
 	
-	private static final int FONT_SIZE = 30;
-	
-	private int score;
-	private int width;
-	private FilledRect board;
-	private Text scoreDisplay;
-	private Text titleDisplay;
+	private ScoreBoardDrawer scoreBoardDisplay;
+	private int score = 0;
 	
 	/**
-	 * Constructs the scoreboard with an initial value of 0.
+	 * Constructs the score board.
 	 * 
-	 * @param loc       the coordinates of the scoreboard
-	 * @param w         the width of the box containing the scoreboard
-	 * @param h         the height of the box containing the scoreboard
-	 * @param canvas    where the scoreboard is drawn
+	 * @param loc  Coordinates where the score board is drawn.
+	 * @param canvas  Canvas where the score board is drawn.
 	 */
-	public ScoreBoard(Location loc, int w, int h, DrawingCanvas canvas) {
-		width = w;
+	public ScoreBoard(Location loc, DrawingCanvas canvas) {
+		scoreBoardDisplay = new ScoreBoardDrawer(loc, canvas);
+		reset();
+	}
+	
+	/**
+	 * Resets the score board.
+	 */
+	public void reset() {
 		score = 0;
-		
-		// construct the scoreboard
-		board = new FilledRect(loc, width, h, canvas);
-		board.setColor(Color2048.CELL_BG);
-		
-		// construct the title
-		titleDisplay = new Text("SCORE", loc, canvas);
-		titleDisplay.setColor(Color.WHITE);
-		titleDisplay.setFontSize(FONT_SIZE);
-		centerText(titleDisplay);
-		
-		// construct the score display
-		scoreDisplay = new Text(score, loc.getX(), loc.getY() + h/2, canvas);
-		scoreDisplay.setColor(Color.WHITE);
-		scoreDisplay.setFontSize(FONT_SIZE);
-		centerText(scoreDisplay);	
+		scoreBoardDisplay.reset();
 	}
 	
 	/**
 	 * Updates the score.
 	 * 
-	 * @param numPoints    the number of points to add to the current score.
+	 * @param points  The number of points to add to the current score.
 	 */
-	public void updateScore(int numPoints) {
-		score += numPoints;
-		scoreDisplay.setText(score);
-		centerText(scoreDisplay);
+	public void addToScore(int points) {
+		score += points;
+		scoreBoardDisplay.update(score);
 	}
 	
-	/**
-	 * Resets the scoreboard.
-	 */
-	public void restart() {
-		score = 0;
-		scoreDisplay.setText(score);
-		centerText(scoreDisplay);
+	class ScoreBoardDrawer {
+		
+		private static final String TITLE = "SCORE";
+		private static final int BOX_WIDTH = 135;
+		private static final int BOX_HEIGHT = 80;
+		private static final int TEXT_SIZE = 30;
+		private static final int DEFAULT_SCORE = 0;
+		
+		private DrawingCanvas canvas;
+		private Location location;
+		private Text scoreDisplay;
+		
+		/**
+		 * Draws the score board.
+		 * 
+		 * @param location  Coordinates where the score board is drawn.
+		 * @param canvas  Canvas where the score board is drawn.
+		 */
+		protected ScoreBoardDrawer(Location location, DrawingCanvas canvas) {
+			this.location = location;
+			this.canvas = canvas;
+			
+			drawBox();
+			drawTitle();
+			drawScore();
+		}
+		
+		/**
+		 * Resets the score board.
+		 */
+		protected void reset() {
+			update(DEFAULT_SCORE);
+		}
+		
+		/**
+		 * Updates the score board.
+		 * 
+		 * @param score  The score to update to.
+		 */
+		protected void update(int score) {
+			scoreDisplay.setText(score);
+			centerText(scoreDisplay);
+		}
+		
+		private void drawBox() {
+			new FilledRect(location, BOX_WIDTH, BOX_HEIGHT, canvas).setColor(Color2048.CELL_BG);
+		}
+		
+		private void drawTitle() {
+			Title title = new Title(TITLE, location, TEXT_SIZE, Color.WHITE, canvas);
+			centerText(title);
+		}
+		
+		private void drawScore() {
+			scoreDisplay = new Text("", location.getX(), location.getY() + BOX_HEIGHT/2, canvas);
+			scoreDisplay.setColor(Color.WHITE);
+			scoreDisplay.setFontSize(TEXT_SIZE);
+			reset();
+		}
+		
+		private void centerText(Text text) {
+			double x = location.getX() + (BOX_WIDTH - text.getWidth())/2;
+			double y = text.getY();
+			text.moveTo(x, y);
+		}
 	}
-	
-	/**
-	 * Centers the text of the scoreboard.
-	 * 
-	 * @param text    the text to center
-	 */
-	private void centerText(Text text) {
-		double x = board.getX()+(width-text.getWidth())/2;
-		double y = text.getY();
-		text.moveTo(x, y);
-	}
-
 }

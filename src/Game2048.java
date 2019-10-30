@@ -1,6 +1,5 @@
 import objectdraw.*;
 import java.awt.event.*;
-import java.awt.Color;
 
 /**
  * Game2048.java
@@ -12,6 +11,8 @@ import java.awt.Color;
  */
 public class Game2048 extends WindowController implements KeyListener {
 	
+	private static final String GAME_TITLE = "2048";
+	
 	// board and tile information
 	private static final int NUM_CELLS = 4;
 	private static final int TILE_OFFSET = 5; // space between tiles
@@ -19,10 +20,6 @@ public class Game2048 extends WindowController implements KeyListener {
 	// object sizes
 	private static final int TITLE_FONT_SIZE = 100;
 	private static final int TILE_SIZE = 100;
-	private static final int RESET_FONT_SIZE = 30;
-	private static final int GAMEOVER_FONT_SIZE = 50;
-	private static final int BOX_WIDTH = 135;
-	private static final int BOX_HEIGHT = 80;
 	private static final int BOARD_SIZE = (NUM_CELLS+1)*TILE_OFFSET + NUM_CELLS*TILE_SIZE;
 	
 	// object locations
@@ -32,12 +29,10 @@ public class Game2048 extends WindowController implements KeyListener {
 	private static final Location BOARD_LOC = new Location(10, 150);
 	
 	// objects
-	private Board board;
-	private FilledRect resetButton;
-	private FilledRect gameOverBG;
+	private GameBoard board;
+	private GameOverBoard gameOverBoard;
+	private ResetButton resetButton;
 	private ScoreBoard scoreBoard;
-	private Text gameOverText;
-	private Text gameWinText;
 
 	// remembers if the game over screen is currently shown
 	private boolean activatedGameOver = false; 
@@ -49,105 +44,10 @@ public class Game2048 extends WindowController implements KeyListener {
 	 * Set-up and start the game.
 	 */
 	public void begin() {
-		// create the title and game over objects
-		Text title = new Text("2048", TITLE_LOC, canvas);
-		title.setFontSize(TITLE_FONT_SIZE);
-		title.setColor(Color2048.DARK_FONT);
-		gameOverBG = new FilledRect(BOARD_LOC, BOARD_SIZE, BOARD_SIZE, canvas);
-		gameOverBG.setColor(Color2048.GAMEOVER_BG);
-		gameOverBG.hide();
-		gameOverText = new Text("GAME OVER", BOARD_SIZE/2, BOARD_SIZE/2, canvas);
-		gameOverText.setFontSize(GAMEOVER_FONT_SIZE);
-		centerText(gameOverText, BOARD_LOC, BOARD_SIZE, BOARD_SIZE);
-		gameOverText.hide();
-		gameWinText = new Text("YOU WIN!", BOARD_SIZE/2, BOARD_SIZE/2, canvas);
-		gameWinText.setFontSize(GAMEOVER_FONT_SIZE);
-		centerText(gameWinText, BOARD_LOC, BOARD_SIZE, BOARD_SIZE);
-		gameWinText.hide();
-
-		// create the score board and reset button
-		scoreBoard = new ScoreBoard(SCORE_LOC, BOX_WIDTH, BOX_HEIGHT, canvas);
-		resetButton = new FilledRect(RESET_LOC, BOX_WIDTH, BOX_HEIGHT/2, canvas);
-		resetButton.setColor(Color2048.CELL_BG);
-		Text restartText = new Text("RESET", RESET_LOC, canvas);
-		restartText.setColor(Color.WHITE);
-		restartText.setFontSize(RESET_FONT_SIZE);
-		centerText(restartText, RESET_LOC, BOX_WIDTH, BOX_HEIGHT/2);
-		
-		// create the game board and the first tile
-		board = new Board(BOARD_LOC, NUM_CELLS, TILE_SIZE, TILE_OFFSET, scoreBoard, canvas);
-		new FilledRect(BOARD_LOC, BOARD_SIZE, BOARD_SIZE, canvas).setColor(Color2048.BOARD_BG);
-		for(int row = 0; row < NUM_CELLS; row++) {
-			for(int col = 0; col < NUM_CELLS; col++) {
-				Location cellLoc = board.posToCoord(row, col);
-				new FilledRect(cellLoc.getX(), cellLoc.getY(), TILE_SIZE, TILE_SIZE, canvas).setColor(Color2048.CELL_BG);
-			}
-		}
-		board.addTile();
-		
-		// get ready to handle the arrow keys
-		requestFocus();
-		addKeyListener(this);
-		setFocusable(true);
-		canvas.addKeyListener(this);
-	}
-
-	/**
-	 * Centers the text based on its container.
-	 *
-	 * @param text      the text to center
-	 * @param loc       the location of the container
-	 * @param width     the width of the container
-	 * @param height    the height of the container
-	 */
-	private void centerText(Text text, Location loc, int width, int height) {
-		double x = loc.getX()+(width-text.getWidth())/2;
-		double y = loc.getY()+(height-text.getHeight())/2;
-		text.moveTo(x, y);
+		drawGame();
+		setupGame();
 	}
 	
-	/**
-	 * Resets the game.
-	 */
-	private void restart() {
-		activatedGameOver = false;
-		board.restart();
-		scoreBoard.restart();
-		gameOverText.hide();
-		gameOverBG.hide();
-		gameWinText.hide();
-		board.addTile();
-	}
-	
-	/**
-	 * Determines the current state of the game.
-	 * 
-	 * @return true if there are no available moves,
-	 *         false otherwise
-	 */
-	private boolean isGameOver() {
-		return !board.canMove();
-	}
-	
-	/**
-	 * Handles the game when it is in the game over state. 
-	 */
-	private void gameOver() {
-		activatedGameOver = true;
-		gameOverBG.show();
-		gameOverBG.sendToFront();
-		gameOverText.show();
-		gameOverText.sendToFront();
-	}
-	
-	private void gameWin() {
-		activatedGameOver = true;
-		gameOverBG.show();
-		gameOverBG.sendToFront();
-		gameWinText.show();
-		gameWinText.sendToFront();
-	}
-
 	/**
 	 * Event handler, called when mouse is clicked.
 	 * 
@@ -156,7 +56,7 @@ public class Game2048 extends WindowController implements KeyListener {
 	 * @param point    mouse coordinates
 	 */
 	public void onMouseClick(Location point) {
-		if(resetButton.contains(point)) {
+		if (resetButton.isClicked(point)) {
 			restart();
 		}
 	}
@@ -199,7 +99,7 @@ public class Game2048 extends WindowController implements KeyListener {
 					board.moveRight();
 				}
 				keyDown = true;
-				if (board.istile2048()) {
+				if (board.hasWinningTile()) {
 					gameWin();
 				}
 			}
@@ -208,4 +108,78 @@ public class Game2048 extends WindowController implements KeyListener {
 		}
 	}
 	
+	private void drawGame() {
+		drawTitle();
+		drawScoreBoard();
+		drawResetButton();
+		drawGameOverBoard();
+		drawBoard();
+	}
+	
+	private void drawTitle() {
+		new Title(GAME_TITLE, TITLE_LOC, TITLE_FONT_SIZE, Color2048.DARK_FONT, canvas);
+	}
+	
+	private void drawGameOverBoard() {
+		gameOverBoard = new GameOverBoard(BOARD_LOC, BOARD_SIZE, canvas);
+	}
+	
+	private void drawScoreBoard() {
+		scoreBoard = new ScoreBoard(SCORE_LOC, canvas);
+	}
+	
+	private void drawResetButton() {
+		resetButton = new ResetButton(RESET_LOC, canvas);
+	}
+	
+	private void drawBoard() {		
+		board = new GameBoard(BOARD_LOC, BOARD_SIZE, NUM_CELLS, TILE_SIZE, TILE_OFFSET, scoreBoard, canvas);
+	}
+
+	private void setupGame() {
+		gameOverBoard.hide();
+		setupArrowKeyListener();
+		board.addRandomTile();
+	}
+	
+	private void setupArrowKeyListener() {
+		requestFocus();
+		addKeyListener(this);
+		setFocusable(true);
+		canvas.addKeyListener(this);
+	}
+	
+	/**
+	 * Restarts the game.
+	 */
+	private void restart() {
+		activatedGameOver = false;
+		board.reset();
+		scoreBoard.reset();
+		gameOverBoard.hide();
+		board.addRandomTile();
+	}
+	
+	/**
+	 * Determines the current state of the game.
+	 * 
+	 * @return true if there are no available moves,
+	 *         false otherwise
+	 */
+	private boolean isGameOver() {
+		return !board.canMove();
+	}
+	
+	/**
+	 * Handles the game when it is in the game over state. 
+	 */
+	private void gameOver() {
+		activatedGameOver = true;
+		gameOverBoard.activateLosingBoard();
+	}
+	
+	private void gameWin() {
+		activatedGameOver = true;
+		gameOverBoard.activateWinningBoard();
+	}	
 }
