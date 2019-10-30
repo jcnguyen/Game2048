@@ -19,4 +19,7 @@ public final class TileStyle {
 	public static final Color BACKGROUND_1024 = new Color(237, 197, 63);
 	public static final Color BACKGROUND_2048 = new Color(237, 194, 46);
 	public static final Color BACKGROUND_DEFAULT = new Color(0, 0, 0);
+
+	public static final Color DARK_FONT = new Color(132, 121, 107);
+	public static final Color LIGHT_FONT = new Color(255, 255, 255);
 }
