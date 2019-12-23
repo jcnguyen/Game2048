@@ -19,13 +19,15 @@ public class Game2048 extends WindowController implements KeyListener {
 	private GameBoard board;
 	private ResetButton resetButton;
 	private ScoreBoard scoreBoard;
-
-	private boolean isKeyPressed = false;
+	
+	private KeyListener keyListener;
 
 	public void begin() {
 		setupArrowKeyListener();
 		drawGame();
 		resetGame();
+		
+		keyListener = new MoveBoardHandler(board);
 	}
 
 	public void onMouseClick(Location point) {
@@ -34,36 +36,29 @@ public class Game2048 extends WindowController implements KeyListener {
 		}
 	}
 
+	/////////////////////////////////////////////////////////////////
 	public void keyTyped(KeyEvent e) {
+		keyListener.keyTyped(e);
 	}
 
 	public void keyReleased(KeyEvent e) {
-		isKeyPressed = false;
+		keyListener.keyReleased(e);
 	}
 
 	public void keyPressed(KeyEvent e) {
-		if (isKeyPressed) {
-			return;
-		}
-		isKeyPressed = true;
-
-		int keyCode = e.getKeyCode();
-		if (isArrowKey(keyCode)) {
-			board.moveBoard(keyCode);
-		}
+		keyListener.keyPressed(e);
 	}
 
-	private Boolean isArrowKey(int keyEvent) {
-		return keyEvent == KeyEvent.VK_UP || keyEvent == KeyEvent.VK_DOWN || keyEvent == KeyEvent.VK_LEFT
-				|| keyEvent == KeyEvent.VK_RIGHT;
-	}
-
+	/////////////////////////////////////////////////////////////////
+	
 	private void setupArrowKeyListener() {
 		requestFocus();
 		addKeyListener(this);
 		setFocusable(true);
 		canvas.addKeyListener(this);
 	}
+	
+	/////////////////////////////////////////////////////////////////////
 
 	private void drawGame() {
 		drawTitle();
@@ -96,6 +91,7 @@ public class Game2048 extends WindowController implements KeyListener {
 				canvas);
 	}
 
+	///////////////////////////////////////////////////////////////////
 	private void resetGame() {
 		scoreBoard.reset();
 		board.reset();
