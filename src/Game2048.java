@@ -21,22 +21,29 @@ public class Game2048 extends WindowController implements KeyListener {
 	private ScoreBoard scoreBoard;
 	
 	private KeyListener keyListener;
+	private IResetGame resetBoardHandler;
 
 	public void begin() {
 		setupArrowKeyListener();
 		drawGame();
-		resetGame();
 		
 		keyListener = new MoveBoardHandler(board);
+		resetBoardHandler = new ResetGameHandler(resetButton, scoreBoard, board);
+		
+		resetBoardHandler.resetGame();
+	}
+	
+	private void setupArrowKeyListener() {
+		requestFocus();
+		addKeyListener(this);
+		setFocusable(true);
+		canvas.addKeyListener(this);
 	}
 
 	public void onMouseClick(Location point) {
-		if (resetButton.isClicked(point)) {
-			resetGame();
-		}
+		resetBoardHandler.resetGameOnClick(point);
 	}
 
-	/////////////////////////////////////////////////////////////////
 	public void keyTyped(KeyEvent e) {
 		keyListener.keyTyped(e);
 	}
@@ -48,16 +55,6 @@ public class Game2048 extends WindowController implements KeyListener {
 	public void keyPressed(KeyEvent e) {
 		keyListener.keyPressed(e);
 	}
-
-	/////////////////////////////////////////////////////////////////
-	
-	private void setupArrowKeyListener() {
-		requestFocus();
-		addKeyListener(this);
-		setFocusable(true);
-		canvas.addKeyListener(this);
-	}
-	
 	/////////////////////////////////////////////////////////////////////
 
 	private void drawGame() {
@@ -89,12 +86,5 @@ public class Game2048 extends WindowController implements KeyListener {
 
 		board = new GameBoard(Game2048Style.BOARD_LOC, BOARD_SIZE, NUM_CELLS, TILE_SIZE, TILE_OFFSET, scoreBoard,
 				canvas);
-	}
-
-	///////////////////////////////////////////////////////////////////
-	private void resetGame() {
-		scoreBoard.reset();
-		board.reset();
-		board.addRandomTile();
 	}
 }
