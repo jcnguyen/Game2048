@@ -16,7 +16,7 @@ public class GameBoard {
 	private int tileOffset;
 	private DrawingCanvas canvas;
 	private Location boardLoc;
-	private ScoreBoard scoreBoard;
+	private IScoreBoard scoreBoard;
 	private Field field;
 	private GameOverBoard gameOverBoard;
 	private boolean gameOver = false;
@@ -32,7 +32,7 @@ public class GameBoard {
 	 * @param scoreBoard the current score
 	 * @param canvas     where the board is drawn
 	 */
-	public GameBoard(Location boardLoc, int size, int numCells, int tileSize, int tileOffset, ScoreBoard scoreBoard,
+	public GameBoard(Location boardLoc, int size, int numCells, int tileSize, int tileOffset, IScoreBoard scoreBoard,
 			DrawingCanvas canvas) {
 		this.numCells = numCells;
 		this.boardLoc = boardLoc;
@@ -150,7 +150,7 @@ public class GameBoard {
 
 		int newVal = valOfTile1 + valOfTile2;
 		field.addTile(row1, col1, newVal);
-		scoreBoard.addToScore(newVal);
+		scoreBoard.addPoints(newVal);
 		hasATileMoved = true;
 	}
 

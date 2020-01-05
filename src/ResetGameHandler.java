@@ -3,10 +3,10 @@ import objectdraw.Location;
 public class ResetGameHandler implements IResetGame {
 	
 	private ResetButton resetButton;
-	private ScoreBoard scoreBoard;
+	private IScoreBoard scoreBoard;
 	private GameBoard board;
 	
-	public ResetGameHandler(ResetButton resetButton, ScoreBoard scoreBoard, GameBoard board) {
+	public ResetGameHandler(ResetButton resetButton, IScoreBoard scoreBoard, GameBoard board) {
 		this.resetButton = resetButton;
 		this.scoreBoard = scoreBoard;
 		this.board = board;

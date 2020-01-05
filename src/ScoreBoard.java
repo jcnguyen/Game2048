@@ -2,7 +2,7 @@ import objectdraw.*;
 import Constants.ScoreBoardStyle;
 import Constants.Strings;
 
-public class ScoreBoard {
+public class ScoreBoard implements IScoreBoard {
 
 	private ScoreBoardDrawer scoreBoardDisplay;
 	private int score = 0;
@@ -17,7 +17,7 @@ public class ScoreBoard {
 		scoreBoardDisplay.reset();
 	}
 
-	public void addToScore(int points) {
+	public void addPoints(int points) {
 		score += points;
 		scoreBoardDisplay.update(score);
 	}
