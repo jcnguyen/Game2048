@@ -12,8 +12,8 @@ public class GameDrawer implements IGameDrawer {
 	
 	private DrawingCanvas canvas;
 	private GameBoard board;
-	private ResetButton resetButton;
-	private ScoreBoard scoreBoard;
+	private IResetButton resetButton;
+	private IScoreBoard scoreBoard;
 	
 	public GameDrawer(DrawingCanvas canvas) {
 		this.canvas = canvas;
@@ -27,13 +27,11 @@ public class GameDrawer implements IGameDrawer {
 		drawBoard();
 	}
 	
-	// todo add to interface, return interface
-	public ScoreBoard getScoreBoard() {
+	public IScoreBoard getScoreBoard() {
 		return scoreBoard;
 	}
 	
-	// todo add to interface, return interface
-	public ResetButton getResetButton() {
+	public IResetButton getResetButton() {
 		return resetButton;
 	}
 	

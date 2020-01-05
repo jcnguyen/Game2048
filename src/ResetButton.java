@@ -2,7 +2,7 @@ import objectdraw.*;
 import Constants.ResetButtonStyle;
 import Constants.Strings;
 
-public class ResetButton {
+public class ResetButton implements IResetButton {
 
 	private DrawingCanvas canvas;
 	private Location location;
